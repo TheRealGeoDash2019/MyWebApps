@@ -1,0 +1,161 @@
+<html lang="en-US">
+  <head>
+    <style>
+      body {
+        background: black;
+        display: flex;
+        margin: 0px;
+        padding: 0px;
+        height: 100vh;
+        transition: background 0.5s;
+      }
+      
+      .screen-container {
+        background: black;
+        display: flex;
+        margin: 0px;
+        padding: 0px;
+        height: 100vh;
+        width: 100vw;
+        opacity: 0.7;
+      }
+      
+      .clock {
+        height: fit-content;
+        font-size: 13vw;
+        font-weight: 600;
+        display: inline-flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        position: fixed;
+        bottom: 8.2vw;
+        left: 3.5vw;
+        align-items: flex-end;
+        opacity: 1;
+      }
+      
+      .clock-main {
+        line-height: 1;
+        opacity: 1;
+      }
+      
+      .clock-seconds {
+        font-size: 5.5vw;
+        font-weight: 400;
+        color: #aaa;
+      }
+      
+      .date {
+        display: inline-flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        height: fit-content;
+        position: fixed;
+        bottom: 3.1vw;
+        font-size: 4.7vw;
+        color: #ddd;
+        font-weight: 500;
+        left: 3.5vw;
+        opacity: 1;
+      }
+      
+      .temp {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0px;
+      }
+      
+      .weather {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        height: fit-content;
+        position: fixed;
+        right: 3.5vw;
+        top: 1vw;
+      }
+    </style>
+    <script>
+      function randomIntFromInterval(min, max) { // min and max included
+        return Math.floor(Math.random() * (max - min + 1) + min)
+      }
+    </script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script>setInterval(() => {let moment_date = moment(new Date); document.querySelector(".clock-main").textContent = moment_date.format("h:mm"); document.querySelector(".clock-seconds").textContent = moment_date.format(":ss"); document.querySelector(".date").textContent = moment(new Date).format("LLLL").split(" ").slice(0, 4).join(" ")}, 500)</script>
+    <script>setInterval(() => {document.body.style.background = "url('https://picsum.photos/" + screen.width + "/" + screen.height + "?blur=1.5#"+ randomIntFromInterval(1, 99999999999999999999) + "')"}, 150000)</script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.style.background = "url('https://picsum.photos/" + screen.width + "/" + screen.height + "?blur=1.5')";
+      })
+      
+      navigator.geolocation.getCurrentPosition((data) => {
+          let long = data.coords.longitude
+          let lat = data.coords.latitude
+          let appid = "960d24b24111670fdc3edea0040a1beb"
+          let url = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + long + "&appid=" + appid + "&units=imperial&mode=json"
+          let json = {};
+          let icon = "";
+          
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url);
+      
+          xhr.onreadystatechange = function () {
+             if (xhr.readyState === 4 && xhr.status === 200) {
+                json = JSON.parse(xhr.responseText)
+                icon = "https://openweathermap.org/img/wn/"+ json.weather[0].icon + "@2x.png"
+      
+                trigger()
+             }};
+      
+          xhr.send()
+      
+          function trigger() {
+              console.log(parseInt(json.main.temp) + "ºF")
+              document.querySelector(".weather").innerHTML = "<img width='64' height='64' src='"+ icon +"'> <h3 class='temp'>"+ parseInt(json.main.temp) + "ºF" + " (" + parseInt(json.main.feels_like) + "ºF" + ")" +"</h3>"
+              
+          }
+      })
+    </script>
+    <script>
+      setInterval(() => {
+        navigator.geolocation.getCurrentPosition((data) => {
+            let long = data.coords.longitude
+            let lat = data.coords.latitude
+            let appid = "960d24b24111670fdc3edea0040a1beb"
+            let url = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + long + "&appid=" + appid + "&units=imperial&mode=json"
+            let json = {};
+            let icon = "";
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+        
+            xhr.onreadystatechange = function () {
+               if (xhr.readyState === 4 && xhr.status === 200) {
+                  json = JSON.parse(xhr.responseText)
+                  icon = "https://openweathermap.org/img/wn/"+ json.weather[0].icon + "@2x.png"
+        
+                  trigger()
+               }};
+        
+            xhr.send()
+        
+            function trigger() {
+                console.log(parseInt(json.main.temp) + "ºF")
+                document.querySelector(".weather").innerHTML = "<img width='64' height='64' src='"+ icon +"'> <h3 class='temp'>"+ parseInt(json.main.temp) + "ºF" + " (" + parseInt(json.main.feels_like) + "ºF" + ")" +"</h3>"
+                
+            }
+        })
+      }, 600000)
+    </script>
+  </head>
+  <body>
+    <div class="screen-container">
+      <div class="clock"><div class="clock-main"></div><div class="clock-seconds"></div></div>
+      <div class="date"></div>
+      <div class="weather"></div>
+    </div>
+  </body>
+</html>
